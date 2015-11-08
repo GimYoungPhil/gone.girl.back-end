@@ -11,6 +11,29 @@ var api = require('./routes/api');
 
 var app = express();
 
+// CORS
+var isPreflight = function(req) {
+  var isHttpOptions = req.method === 'OPTIONS';
+  var hasOriginHeader = req.headers['origin'];
+  var hasRequestMethod = req.headers['access-control-request-method'];
+  return isHttpOptions && hasOriginHeader && hasRequestMethod;
+};
+
+var handleCors = function(req, res, next) {
+  res.set('Access-Control-Allow-Origin', 'http://localhost:8000');
+  if (isPreflight(req)) {
+    console.log('Received a preflight request!');
+    res.set('Access-Control-Allow-Methods', 'GET, DELETE');
+    res.set('Access-Control-Allow-Headers',
+            'Timezone-Offset, Sample-Source');
+    res.set('Access-Control-Max-Age', '120');
+    res.status(204).end();
+    return;
+  }
+  next();
+};
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -22,6 +45,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(handleCors);
 
 app.use('/', routes);
 app.use('/users', users);
