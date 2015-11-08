@@ -25,7 +25,7 @@ var handleCors = function(req, res, next) {
     console.log('Received a preflight request!');
     res.set('Access-Control-Allow-Methods', 'GET, DELETE');
     res.set('Access-Control-Allow-Headers',
-            'Timezone-Offset, Sample-Source');
+            'Timezone-Offset, Sample-Source, Content-Type');
     res.set('Access-Control-Max-Age', '120');
     res.status(204).end();
     return;
