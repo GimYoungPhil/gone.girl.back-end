@@ -21,6 +21,7 @@ var isPreflight = function(req) {
 
 var handleCors = function(req, res, next) {
   res.set('Access-Control-Allow-Origin', 'http://localhost:8000');
+  res.set('Access-Control-Allow-Credentials', 'true');
   if (isPreflight(req)) {
     console.log('Received a preflight request!');
     res.set('Access-Control-Allow-Methods', 'GET, DELETE');
