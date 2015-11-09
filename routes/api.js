@@ -1,33 +1,39 @@
-
-var options = {
-  hostname: "openapi.animal.go.kr",
-  path: "/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?bgnde=20151020&endde=20151028&ServiceKey=Z3bYXoHuTv1ttp4LF7sHs8H%2BeoEmVB%2BbLwO9WCYTD5cenWgZuBCxOiQiTmQIJBb9bvG1Vms1673ukVKMpxB50g%3D%3D",
-  method: "GET",
-  headers: {
-    'Content-Type': 'application/xml',
-  }
-};
-
+var querystring = require('querystring');
 var http = require('http');
 var express = require('express');
 var router = express.Router();
-var parseString = require('xml2js').parseString;
+
+var queryData = querystring.stringify({
+  '_type' : 'json',
+  'bgnde' : '20151108',
+  'endde' : '20151109',
+  'ServiceKey' : 'Z3bYXoHuTv1ttp4LF7sHs8H+eoEmVB+bLwO9WCYTD5cenWgZuBCxOiQiTmQIJBb9bvG1Vms1673ukVKMpxB50g=='
+});
+
+var options = {
+  hostname: "openapi.animal.go.kr",
+  path: "/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?" + queryData,
+  method: "GET",
+  headers: {
+    'Content-Type': 'application/json',
+  }
+};
 
 var createRequest = function(callback) {
 
-  var resultXML = '';
-  // console.log(options);
+  var result = '';
+
   var req = http.request(options, function(res) {
     // console.log('STATUS: ' + res.statusCode);
     // console.log('HEADERS: ' + JSON.stringify(res.headers));
     res.setEncoding('utf8');
     res.on('data', function (chunk) {
       // console.log('BODY: ' + chunk);
-      resultXML += chunk;
+      result += chunk;
     });
     res.on('end', function() {
       // console.log('No more data in response.')
-      callback(resultXML);
+      callback(JSON.parse(result));
     });
   });
 
@@ -40,19 +46,13 @@ var createRequest = function(callback) {
 
 /* GET api listing. */
 router.get('/', function(req, res, next) {
-
   createRequest(function(data) {
-
-    parseString(data, function (err, result) {
-      res.json(result);
-    });
+    res.json(data);
   });
-
-  // res.send({});
 });
 
 router.get('/pets', function(req, res, next) {
   res.json(POSTS);
-})
+});
 
 module.exports = router;
