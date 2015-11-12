@@ -19,7 +19,7 @@ var upkindMap = {
 var apiParams = {
   ServiceKey: SERVICE_KEY,
   _type:      'json',
-  numOfRows:   300
+  numOfRows:   200
 };
 
 var apiOptions = {
@@ -94,7 +94,8 @@ router.get('/recent', function(req, res, next) {
 router.get('/cats', function(req, res, next) {
 
   var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
-  var options = makeOtions(lastStr, lastStr, 'cat');
+  var todayStr = moment().format('YYYYMMDD');
+  var options = makeOtions(lastStr, todayStr, 'cat');
 
   requestOpenAPI(options, function(data) {
     res.json(data.response.body);
@@ -108,7 +109,8 @@ router.get('/cats', function(req, res, next) {
 router.get('/dogs', function(req, res, next) {
 
   var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
-  var options = makeOtions(lastStr, lastStr, 'dog');
+  var todayStr = moment().format('YYYYMMDD');
+  var options = makeOtions(lastStr, todayStr, 'dog');
 
   requestOpenAPI(options, function(data) {
     res.json(data.response.body);
@@ -121,7 +123,7 @@ router.get('/dogs', function(req, res, next) {
  */
 router.get('/etcs', function(req, res, next) {
 
-  var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
+  var lastStr = moment().subtract(30, 'days').format('YYYYMMDD');
   var todayStr = moment().format('YYYYMMDD');
   var options = makeOtions(lastStr, todayStr, 'etc');
 
