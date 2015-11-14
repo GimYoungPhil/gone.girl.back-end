@@ -1,38 +1,59 @@
-var querystring = require('querystring');
-var http = require('http');
 var express = require('express');
 var router = express.Router();
 
-var queryData = querystring.stringify({
-  '_type' : 'json',
-  'bgnde' : '20151108',
-  'endde' : '20151109',
-  'ServiceKey' : 'Z3bYXoHuTv1ttp4LF7sHs8H+eoEmVB+bLwO9WCYTD5cenWgZuBCxOiQiTmQIJBb9bvG1Vms1673ukVKMpxB50g=='
-});
+var querystring = require('querystring');
+var moment = require('moment');
+var _ = require('underscore');
+var http = require('http');
 
-var options = {
+var API_PATH    = '/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?'
+var SERVICE_KEY = 'Z3bYXoHuTv1ttp4LF7sHs8H+eoEmVB+bLwO9WCYTD5cenWgZuBCxOiQiTmQIJBb9bvG1Vms1673ukVKMpxB50g==';
+
+var upkindMap = {
+  'dog': 417000,
+  'cat': 422400,
+  'etc': 429900,
+  'all': ''
+}
+
+var apiParams = {
+  ServiceKey: SERVICE_KEY,
+  _type:      'json',
+  numOfRows:   200
+};
+
+var apiOptions = {
   hostname: "openapi.animal.go.kr",
-  path: "/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?" + queryData,
   method: "GET",
   headers: {
     'Content-Type': 'application/json',
   }
 };
 
-var createRequest = function(callback) {
+var makeOtions = function(bgnde, endde, type) {
+  var params = _.extend(apiParams, {
+    bgnde: bgnde,
+    endde: endde,
+    upkind: type ? upkindMap[type] : ''
+  });
 
+  var query = querystring.stringify(params);
+
+  var options = _.extend(apiOptions, {
+    path: API_PATH + query
+  });
+
+  return options;
+};
+
+var requestOpenAPI = function(options, callback) {
   var result = '';
-
   var req = http.request(options, function(res) {
-    // console.log('STATUS: ' + res.statusCode);
-    // console.log('HEADERS: ' + JSON.stringify(res.headers));
     res.setEncoding('utf8');
     res.on('data', function (chunk) {
-      // console.log('BODY: ' + chunk);
       result += chunk;
     });
     res.on('end', function() {
-      // console.log('No more data in response.')
       callback(JSON.parse(result));
     });
   });
@@ -51,8 +72,64 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/pets', function(req, res, next) {
-  res.json(POSTS);
+
+/*
+ *  recent
+ *  method: GET
+ */
+router.get('/recent', function(req, res, next) {
+
+  var todayStr = moment().format('YYYYMMDD');
+  var options = makeOtions(todayStr, todayStr, 'all');
+
+  requestOpenAPI(options, function(data) {
+    res.json(data.response.body);
+  });
+});
+
+/*
+ *  cats
+ *  method: GET
+ */
+router.get('/cats', function(req, res, next) {
+
+  var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
+  var todayStr = moment().format('YYYYMMDD');
+  var options = makeOtions(lastStr, todayStr, 'cat');
+
+  requestOpenAPI(options, function(data) {
+    res.json(data.response.body);
+  });
+});
+
+/*
+ *  dogs
+ *  method: GET
+ */
+router.get('/dogs', function(req, res, next) {
+
+  var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
+  var todayStr = moment().format('YYYYMMDD');
+  var options = makeOtions(lastStr, todayStr, 'dog');
+
+  requestOpenAPI(options, function(data) {
+    res.json(data.response.body);
+  });
+});
+
+/*
+ *  etcs
+ *  method: GET
+ */
+router.get('/etcs', function(req, res, next) {
+
+  var lastStr = moment().subtract(30, 'days').format('YYYYMMDD');
+  var todayStr = moment().format('YYYYMMDD');
+  var options = makeOtions(lastStr, todayStr, 'etc');
+
+  requestOpenAPI(options, function(data) {
+    res.json(data.response.body);
+  });
 });
 
 module.exports = router;
