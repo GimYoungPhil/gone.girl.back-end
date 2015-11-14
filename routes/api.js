@@ -47,7 +47,7 @@ var createRequest = function(callback) {
 /* GET api listing. */
 router.get('/', function(req, res, next) {
   createRequest(function(data) {
-    res.json(data);
+    res.json(data.response.body);
   });
 });
 
