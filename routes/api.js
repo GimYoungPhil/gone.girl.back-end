@@ -80,7 +80,7 @@ router.get('/abandonment', function(req, res, next) {
   var endde = req.param('endde');
   var numOfRows = req.param('numOfRows') || defultParamInfo.numOfRows;
 
-  //³¯Â¥°¡ µÑÁß¿¡ ÇÏ³ª¶óµµ ÀÌ»óÇÏ°Ô ³Ñ¾î¿À¸é ÀÚµ¿À¸·Î ¼­¹ö¿¡ ¼³Á¤µÈ ±â°£À¸·Î ¿À´Ã ~ ¿À´Ã - ¼³Á¤µÈ ±â°£À¸·Î ³¯Â¥·Î °Ë»öÇÏ°Ô
+  //ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ï°ï¿½ ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ~ ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï°ï¿½
   if(!bgnde || !endde) {
     endde = moment().format('YYYYMMDD');
     bgnde = moment().add(defultParamInfo.defaultQueryDay * -1, 'day');
