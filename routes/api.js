@@ -14,7 +14,7 @@ var upkindMap = {
   'cat': 422400,
   'etc': 429900,
   'all': ''
-}
+};
 
 var apiParams = {
   ServiceKey: SERVICE_KEY,
@@ -28,24 +28,6 @@ var apiOptions = {
   headers: {
     'Content-Type': 'application/json'
   }
-};
-
-var makeOtions = function(bgnde, endde, type) {
-
-  var params = _.extend(apiParams, {
-    bgnde: bgnde,
-    endde: endde,
-    upkind: type ? upkindMap[type] : ''
-  });
-
-  var query = querystring.stringify(params);
-
-  var options = _.extend(apiOptions, {
-    path: API_PATH + query
-  });
-
-  return options;
-
 };
 
 var requestOpenAPI = function(options, callback) {
@@ -80,7 +62,6 @@ router.get('/abandonment', function(req, res, next) {
   var endde = req.param('endde');
   var numOfRows = req.param('numOfRows') || defultParamInfo.numOfRows;
 
-  //날짜가 둘중에 하나라도 이상하게 넘어오면 자동으로 서버에 설정된 기간으로 오늘 ~ 오늘 - 설정된 기간으로 날짜로 검색하게
   if(!bgnde || !endde) {
     endde = moment().format('YYYYMMDD');
     bgnde = moment().subtract(defultParamInfo.defaultQueryDay, 'day').format('YYYYMMDD');
@@ -105,80 +86,7 @@ router.get('/abandonment', function(req, res, next) {
     res.json(data.response.body);
   });
 
-
 });
 
-
-
-
-//  ============================ old ============================
-
-
-/* GET api listing. */
-router.get('/', function(req, res, next) {
-  createRequest(function(data) {
-    res.json(data.response.body);
-  });
-});
-
-
-/*
- *  recent
- *  method: GET
- */
-router.get('/recent', function(req, res, next) {
-
-  var todayStr = moment().format('YYYYMMDD');
-  var options = makeOtions(todayStr, todayStr, 'all');
-
-  requestOpenAPI(options, function(data) {
-    res.json(data.response.body);
-  });
-});
-
-/*
- *  cats
- *  method: GET
- */
-router.get('/cats', function(req, res, next) {
-
-  var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
-  var todayStr = moment().format('YYYYMMDD');
-  var options = makeOtions(lastStr, todayStr, 'cat');
-
-  requestOpenAPI(options, function(data) {
-    res.json(data.response.body);
-  });
-});
-
-/*
- *  dogs
- *  method: GET
- */
-router.get('/dogs', function(req, res, next) {
-
-  var lastStr = moment().subtract(10, 'days').format('YYYYMMDD');
-  var todayStr = moment().format('YYYYMMDD');
-  var options = makeOtions(lastStr, todayStr, 'dog');
-
-  requestOpenAPI(options, function(data) {
-    res.json(data.response.body);
-  });
-});
-
-/*
- *  etcs
- *  method: GET
- */
-router.get('/etcs', function(req, res, next) {
-
-  var lastStr = moment().subtract(30, 'days').format('YYYYMMDD');
-  var todayStr = moment().format('YYYYMMDD');
-  var options = makeOtions(lastStr, todayStr, 'etc');
-
-  requestOpenAPI(options, function(data) {
-    res.json(data.response.body);
-  });
-});
 
 module.exports = router;
