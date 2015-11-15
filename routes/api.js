@@ -83,22 +83,23 @@ router.get('/abandonment', function(req, res, next) {
   //날짜가 둘중에 하나라도 이상하게 넘어오면 자동으로 서버에 설정된 기간으로 오늘 ~ 오늘 - 설정된 기간으로 날짜로 검색하게
   if(!bgnde || !endde) {
     endde = moment().format('YYYYMMDD');
-    bgnde = moment().add(defultParamInfo.defaultQueryDay * -1, 'day');
+    bgnde = moment().subtract(defultParamInfo.defaultQueryDay, 'day').format('YYYYMMDD');
   }
 
   var params = _.extend(apiParams, {
     bgnde: bgnde,
     endde: endde,
-    upkind: upkind === 'all' ? '' : upkind,
+    upkind: upkindMap[upkind],
     pageNo: pageNo,
     numOfRows: numOfRows
   });
 
   var query = querystring.stringify(params);
-
   var options = _.extend(apiOptions, {
     path: API_PATH + query
   });
+
+  console.log("query : " + query);
 
   requestOpenAPI(options, function(data) {
     res.json(data.response.body);
