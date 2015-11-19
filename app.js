@@ -20,7 +20,7 @@ var isPreflight = function(req) {
 };
 
 var handleCors = function(req, res, next) {
-  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Origin', 'https://gonegirl.firebaseapp.com');
   res.set('Access-Control-Allow-Credentials', 'true');
   if (isPreflight(req)) {
     console.log('Received a preflight request!');
